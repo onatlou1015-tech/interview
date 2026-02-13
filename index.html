@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=no">
+    <title>interview · tell me about this photo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #1a4e5a, #0d3a40);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+            touch-action: pan-y;
+        }
+
+        /* MAIN CONTAINER — LARGE, TOUCH-FRIENDLY, FITS ANY INTERACTIVE BOARD */
+        .interview-studio {
+            max-width: 1300px;
+            width: 100%;
+            background: #285f5b;
+            background: radial-gradient(circle at 20% 40%, #3c837b, #1e5652);
+            border-radius: 70px 70px 50px 50px;
+            box-shadow: 0 30px 40px #062b2b;
+            padding: 30px 35px;
+            border-bottom: 15px solid #0e4643;
+            display: flex;
+            flex-direction: column;
+            min-height: 85vh;
+            max-height: 1000px;
+        }
+
+        /* HEADER — INTERVIEWER & MIC ICON */
+        .interview-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #033b39;
+            padding: 16px 35px;
+            border-radius: 100px;
+            color: #fdffd2;
+            border-bottom: 10px solid #7aa35c;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .interviewer {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            font-size: 2.2rem;
+            font-weight: 700;
+            text-shadow: 0 4px 0 #154e41;
+        }
+
+        .mic-icon {
+            background: #323232;
+            padding: 12px 25px;
+            border-radius: 60px;
+            font-size: 2rem;
+            border-bottom: 8px solid #858585;
+            color: #fffeca;
+        }
+
+        /* QUESTION CARD — "TELL ME ABOUT THIS PHOTO" */
+        .question-card {
+            background: #f7e9b0;
+            background: linear-gradient(145deg, #fffad4, #ffea9c);
+            border-radius: 90px 90px 40px 90px;
+            padding: 30px 45px;
+            margin-bottom: 30px;
+            border-bottom: 16px solid #c89d4b;
+            box-shadow: 0 15px 0 #7e6236, inset 0 2px 20px white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .question-text {
+            font-size: 3.2rem;
+            font-weight: 800;
+            color: #10332e;
+            letter-spacing: 4px;
+            text-shadow: 0 4px 0 #ffeab5;
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .question-text span {
+            background: #206454;
+            color: #fffed8;
+            padding: 8px 28px;
+            border-radius: 70px;
+            font-size: 2rem;
+            border-bottom: 8px solid #0d362f;
+        }
+
+        /* READY BUTTON — BIG, TACTILE, CENTER OF ATTENTION */
+        .ready-btn {
+            background: #f03737;
+            background: radial-gradient(circle at 30% 30%, #ff7a4d, #c72f2f);
+            border: none;
+            border-bottom: 16px solid #712020;
+            color: white;
+            font-size: 3.2rem;
+            font-weight: 900;
+            padding: 25px 70px;
+            border-radius: 130px;
+            letter-spacing: 16px;
+            box-shadow: 0 18px 0 #4d1a1a, 0 25px 30px black;
+            cursor: pointer;
+            transition: 0.07s;
+            text-shadow: 0 4px 0 #4d1a1a;
+            margin-left: 15px;
+        }
+
+        .ready-btn:active {
+            transform: translateY(16px);
+            box-shadow: 0 6px 0 #4d1a1a, 0 25px 30px black;
+            border-bottom-width: 8px;
+        }
+
+        /* PHOTO GALLERY — HIDDEN UNTIL READY BUTTON IS PRESSED */
+        .photo-stage {
+            background: #1e5850;
+            border-radius: 70px;
+            padding: 25px;
+            box-shadow: inset 0 -12px 0 #0e3532, inset 0 10px 35px #b8ffd3;
+            border: 8px solid #ffe89a;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin-top: 15px;
+        }
+
+        .photo-frame {
+            background: #2a363b;
+            border-radius: 50px;
+            padding: 25px;
+            box-shadow: inset 0 0 0 8px #92845e, inset 0 0 40px black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 350px;
+            flex: 1;
+        }
+
+        /* DYNAMIC PHOTO DISPLAY */
+        .photo-display {
+            max-width: 100%;
+            max-height: 450px;
+            border-radius: 40px;
+            box-shadow: 0 20px 25px black;
+            border: 12px solid #fffcd1;
+            object-fit: contain;
+            background: #ebebc0;
+            display: block;
+        }
+
+        .placeholder-message {
+            font-size: 2.5rem;
+            color: #ffeec2;
+            background: #1e4a48;
+            padding: 45px 60px;
+            border-radius: 90px;
+            border: 8px dashed #ffe594;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* PHOTO CAPTION / HINT */
+        .caption-area {
+            margin-top: 25px;
+            background: #17423f;
+            padding: 20px 35px;
+            border-radius: 70px;
+            color: #fffec4;
+            font-size: 1.9rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 10px solid #639155;
+        }
+
+        .next-btn {
+            background: #538e7a;
+            border: none;
+            border-bottom: 10px solid #2b584b;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            padding: 12px 45px;
+            border-radius: 90px;
+            letter-spacing: 6px;
+            cursor: pointer;
+            box-shadow: 0 10px 0 #2a4a3d;
+            transition: 0.05s;
+        }
+
+        .next-btn:active {
+            transform: translateY(10px);
+            box-shadow: 0 2px 0 #2a4a3d;
+            border-bottom-width: 4px;
+        }
+
+        /* STATUS INDICATOR */
+        .status-badge {
+            background: #0e332e;
+            padding: 12px 30px;
+            border-radius: 60px;
+            font-size: 1.8rem;
+            color: #fffec9;
+            border: 4px solid #ffc857;
+        }
+
+        @media (max-width: 900px) {
+            .interview-studio { padding: 20px; }
+            .question-text { font-size: 2.4rem; }
+            .ready-btn { font-size: 2.6rem; padding: 18px 40px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="interview-studio">
+        <!-- HEADER: Interviewer info -->
+        <div class="interview-header">
+            <div class="interviewer">
+                🎙️ INTERVIEWER 
+                <span style="background:#205e4a; padding:8px 25px; border-radius:60px;">🎬 READY ROOM</span>
+            </div>
+            <div class="mic-icon">
+                🎤 LIVE
+            </div>
+        </div>
+
+        <!-- QUESTION CARD: "Tell me about this photo." + READY button -->
+        <div class="question-card">
+            <div class="question-text">
+                🖼️ "Tell me about this photo." 
+                <span>🎧</span>
+            </div>
+            <!-- BIG READY BUTTON — image hidden until pressed -->
+            <button id="readyButton" class="ready-btn">✅ READY</button>
+        </div>
+
+        <!-- PHOTO STAGE: initially shows placeholder, image appears after READY -->
+        <div class="photo-stage">
+            <div id="photoFrame" class="photo-frame">
+                <!-- dynamic content: placeholder OR actual photo -->
+                <div id="photoContent" style="display: flex; justify-content: center; align-items: center; width: 100%;">
+                    <!-- placeholder by default -->
+                    <div class="placeholder-message" id="placeholderMsg">
+                        🎬 Press READY to reveal image
+                    </div>
+                </div>
+            </div>
+            
+            <!-- BOTTOM BAR: caption & next photo button -->
+            <div class="caption-area">
+                <span id="photoCaption" class="status-badge">📷 waiting...</span>
+                <button id="nextPhotoBtn" class="next-btn">⏩ NEXT PHOTO</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            "use strict";
+
+            // ---------- PHOTO LIBRARY: high-quality, diverse images ----------
+            const PHOTO_LIBRARY = [
+                {
+                    url: "https://images.pexels.com/photos/1592384/pexels-photo-1592384.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+                    caption: "🏔️ Mountain lake — describe the scenery"
+                },
+                {
+                    url: "https://images.pexels.com/photos/699459/pexels-photo-699459.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+                    caption: "🐕 Happy dog running on the beach"
+                },
+                {
+                    url: "https://images.pexels.com/photos/3768914/pexels-photo-3768914.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+                    caption: "👨‍👩‍👧 Family having dinner together"
+                },
+                {
+                    url: "https://images.pexels.com/photos/1572386/pexels-photo-1572386.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+                    caption: "📚 Students studying in library"
+                },
+                {
+                    url: "https://images.pexels.com/photos/1271619/pexels-photo-1271619.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+                    caption: "🍕 Chef making pizza"
+                },
+                {
+                    url: "https://images.pexels.com/photos/358457/pexels-photo-358457.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+                    caption: "🚴 Cyclist in the city"
+                },
+                {
+                    url: "https://images.pexels.com/photos/235621/pexels-photo-235621.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+                    caption: "🐘 Elephant family at sunset"
+                },
+                {
+                    url: "https://images.pexels.com/photos/3771833/pexels-photo-3771833.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+                    caption: "🎨 Artist painting on canvas"
+                }
+            ];
+
+            // ---------- STATE ----------
+            let currentPhotoIndex = 0;
+            let isImageRevealed = false;      // has READY been pressed?
+            let readyButtonPressed = false;
+
+            // DOM elements
+            const readyBtn = document.getElementById('readyButton');
+            const nextBtn = document.getElementById('nextPhotoBtn');
+            const photoContentDiv = document.getElementById('photoContent');
+            const photoCaptionSpan = document.getElementById('photoCaption');
+            const placeholderMsg = document.getElementById('placeholderMsg');
+
+            // ---------- HELPER: load and display current photo (if revealed) ----------
+            function updatePhotoDisplay() {
+                // clear photoContentDiv
+                photoContentDiv.innerHTML = '';
+
+                if (isImageRevealed) {
+                    // ---------- SHOW ACTUAL PHOTO ----------
+                    const photo = PHOTO_LIBRARY[currentPhotoIndex];
+                    
+                    // create image element
+                    const img = document.createElement('img');
+                    img.src = photo.url;
+                    img.alt = 'Interview photo';
+                    img.className = 'photo-display';
+                    img.style.maxWidth = '100%';
+                    img.style.maxHeight = '450px';
+                    img.style.borderRadius = '40px';
+                    img.style.border = '12px solid #fffcd1';
+                    img.style.boxShadow = '0 20px 25px black';
+                    
+                    // add loading fallback
+                    img.onerror = function() {
+                        this.style.display = 'none';
+                        const errorMsg = document.createElement('div');
+                        errorMsg.className = 'placeholder-message';
+                        errorMsg.style.background = '#6b3a3a';
+                        errorMsg.textContent = '🖼️ Image loading... please tap NEXT';
+                        photoContentDiv.appendChild(errorMsg);
+                    };
+                    
+                    photoContentDiv.appendChild(img);
+                    
+                    // update caption
+                    photoCaptionSpan.textContent = photo.caption;
+                    photoCaptionSpan.style.background = '#1f6650';
+                } else {
+                    // ---------- SHOW PLACEHOLDER (PRESS READY) ----------
+                    const placeholder = document.createElement('div');
+                    placeholder.className = 'placeholder-message';
+                    placeholder.id = 'placeholderMsg';
+                    placeholder.textContent = '🎬 Press READY to reveal image';
+                    photoContentDiv.appendChild(placeholder);
+                    
+                    // reset caption
+                    photoCaptionSpan.textContent = '📷 waiting for READY...';
+                    photoCaptionSpan.style.background = '#0e332e';
+                }
+            }
+
+            // ---------- READY BUTTON: reveals the image! ----------
+            function onReadyPress() {
+                // set flag
+                isImageRevealed = true;
+                readyButtonPressed = true;
+                
+                // update display: show current photo
+                updatePhotoDisplay();
+                
+                // optional: change ready button appearance (already pressed)
+                readyBtn.style.opacity = '0.9';
+                readyBtn.style.transform = 'translateY(8px)';
+                readyBtn.style.boxShadow = '0 8px 0 #4d1a1a, 0 25px 30px black';
+                readyBtn.style.borderBottomWidth = '8px';
+                readyBtn.textContent = '✅ READY!';
+                
+                // disable ready button? we keep it active but can press again (re-reveal same photo)
+                // but we want them to press NEXT for new photo
+            }
+
+            // ---------- NEXT PHOTO: load next image, HIDE until READY pressed again ----------
+            function onNextPhoto() {
+                // move to next photo in library
+                currentPhotoIndex = (currentPhotoIndex + 1) % PHOTO_LIBRARY.length;
+                
+                // IMPORTANT: after next, image is HIDDEN again – student must press READY
+                isImageRevealed = false;
+                readyButtonPressed = false;
+                
+                // reset ready button appearance
+                readyBtn.style.opacity = '1';
+                readyBtn.style.transform = 'translateY(0)';
+                readyBtn.style.boxShadow = '0 18px 0 #4d1a1a, 0 25px 30px black';
+                readyBtn.style.borderBottomWidth = '16px';
+                readyBtn.textContent = '✅ READY';
+                
+                // update display (placeholder)
+                updatePhotoDisplay();
+            }
+
+            // ---------- EVENT LISTENERS (touch + mouse) ----------
+            readyBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                onReadyPress();
+            });
+
+            nextBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                onNextPhoto();
+            });
+
+            // ---------- INITIAL SETUP ----------
+            function init() {
+                // start with first photo index, but NOT revealed
+                currentPhotoIndex = 0;
+                isImageRevealed = false;
+                readyButtonPressed = false;
+                
+                // display placeholder
+                updatePhotoDisplay();
+                
+                // ensure ready button is in initial state
+                readyBtn.textContent = '✅ READY';
+                readyBtn.style.transform = 'translateY(0)';
+                readyBtn.style.boxShadow = '0 18px 0 #4d1a1a, 0 25px 30px black';
+                readyBtn.style.borderBottomWidth = '16px';
+                
+                // set initial caption
+                photoCaptionSpan.textContent = '📷 waiting for READY...';
+            }
+
+            // make sure images scale on interactive board
+            function adjustForScreen() {
+                // responsive: nothing extra needed
+            }
+            window.addEventListener('resize', adjustForScreen);
+            
+            // start the interview
+            init();
+        })();
+    </script>
+</body>
+</html>
